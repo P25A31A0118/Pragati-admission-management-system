@@ -1,0 +1,132 @@
+#include <stdio.h>
+#include <string.h>
+
+#define MAX 150
+
+struct Student {    
+    int app_no;
+    char name[50];
+    char department[30];
+};
+// Seat limits (changed from 2 to 50)
+int seatCSE  = 150;
+int seatECE  = 100;
+int seatMECH = 80;
+int seatCE   = 80;    // New course: CE
+
+void showRemainingSeats() {
+printf("\n—seat Availability--\n");
+printf("CSE seats Left   : %d\n”, seatCSE);
+printf("ECE Seats Left   : %d\n", seatECE);
+printf("MECH Seats Left  : %d\n", seatMECH);    
+printf("CE Seats Left    : %d\n", seatCE);
+}
+int checkSeat(char dept[]) 
+{    
+if (strcmp(dept, "CSE") == 0 && seatCSE > 0)        
+return 1;    
+else if (strcmp(dept, "ECE") == 0 && seatECE > 0)        
+return 1;    
+else if (strcmp(dept, "MECH") == 0 && seatMECH > 0)        
+return 1;    
+else if (strcmp(dept, "CE") == 0 && seatCE > 0)
+ return 1;    
+else       
+return 0;
+}
+void reduceSeat(char dept[]) 
+{    
+if (strcmp(dept, "CSE") == 0)        
+seatCSE--;    
+else if (strcmp(dept, "ECE") == 0)        
+seatECE--;    
+else if (strcmp(dept, "MECH") == 0)   
+seatMECH--;
+else if (strcmp(dept, "CE") == 0)        
+seatCE--;
+}
+void addStudent(struct Student s[], int *count) 
+{    
+if (*count >= MAX) 
+{        
+printf("Cannot add more students!\n");        
+return;    
+} 
+struct Student temp;    
+printf("\nEnter Application Number: ");    
+scanf("%d", &temp.app_no);    
+printf("Enter Name: ");    
+scanf(" %[^\n]", temp.name); 
+   
+// Updated department list here    
+printf("Enter Department (CSE/ECE/MECH/CE): ");    
+scanf("%s", temp.department);
+
+ // SEAT CHECK    
+if (!checkSeat(temp.department)) 
+{  
+printf("\n❌ Seats Full in %s Department OR Invalid Department!\n", temp.department);        return;    
+} 
+
+// Add to array    
+s[*count] = temp;    
+(*count)++;    
+
+// Reduce seat    
+reduceSeat(temp.department);    
+printf("\n✔ Student admitted successfully!\n");
+} 
+void displayStudents(struct Student s[], int count) 
+{    
+if (count == 0) 
+{        
+printf("\nNo students admitted yet!\n");        
+return;    
+}
+printf("\n--- Admitted Students ---\n");    
+for (int i = 0; i < count; i++) {        
+printf("\nApplication No: %d", s[i].app_no);
+printf("\nName: %s", s[i].name);        
+printf("\nDepartment: %s", s[i].department);           }
+}
+void searchStudent(struct Student s[], int count) {    
+int no, found = 0;
+printf("\nEnter Application Number to search: ");    
+scanf("%d", &no);    
+for (int i = 0; i < count; i++) {        
+if (s[i].app_no == no) {            
+printf("\n--- Student Found ---\n");            
+printf("Application No: %d\n", s[i].app_no);
+printf("Name: %s\n", s[i].name);            
+printf("Department: %s\n", s[i].department);                      
+found = 1;            
+break;        }    
+}
+if (!found)        
+printf("❌ No student found with that Application Number.\n");  }
+int main() {
+struct Student s[MAX];    
+int count = 0, choice;    
+do {      
+printf("\n--- College Admission System ---\n");        
+printf("1. Add Student\n");       
+printf("2. Display All Students\n");        
+printf("3. Search Student\n");        
+printf("4. Show Remaining Seats\n");        
+printf("5. Exit\n");        
+printf("Enter choice: ");        
+scanf("%d", &choice);
+
+switch (choice) {            
+case 1: addStudent(s, &count); break;            
+case 2: displayStudents(s, count); break;            
+case 3: searchStudent(s, count); break;            
+case 4: showRemainingSeats(); break;            
+case 5: printf("Exiting...\n"); break;            
+default: printf("Invalid choice!\n");        
+}
+
+ } 
+while (choice != 5);
+return 0;
+}
